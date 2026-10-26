@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#051329">
+  <title>Vida Marina | Plataforma de Conservación ODS 14 (Sprint 2 & Backlog)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            ocean: {
+              950: '#030a16',
+              900: '#051329',
+              800: '#07192f',
+              700: '#0b2545',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Estilos Personalizados ODS 14 -->
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body class="bg-[#051329] text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-slate-950">
+
+  <!-- ============================================================== -->
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR (ESCRITORIO Y TABLETS) -->
+  <!-- ============================================================== -->
+  <header class="sticky top-0 z-40 ocean-glass border-b border-cyan-500/20 px-4 sm:px-6 py-3 transition-all">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-3">
+      
+      <!-- Logotipo y Título ODS 14 -->
+      <div onclick="App.navigate('home')" class="flex items-center gap-3 cursor-pointer group">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500 via-teal-400 to-sky-500 flex items-center justify-center text-2xl shadow-lg shadow-cyan-500/30 group-hover:scale-105 transition-transform">
+          🌊
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-heading font-black text-lg tracking-tight bg-gradient-to-r from-cyan-300 via-teal-200 to-sky-400 bg-clip-text text-transparent">
+              VIDA MARINA
+            </span>
+            <span class="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-400/40">
+              ODS 14
+            </span>
+          </div>
+          <p class="hidden sm:block text-[11px] text-slate-400 font-medium">Plataforma Integral de Conservación Oceánica</p>
+        </div>
+      </div>
+
+      <!-- Menú de Navegación Principal (Pantallas Medianas y Grandes) -->
+      <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+        <button onclick="App.navigate('home')" data-nav-view="home" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-transparent hover:text-white">
+          Inicio
+        </button>
+        <button onclick="App.navigate('calendar')" data-nav-view="calendar" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-transparent hover:text-white flex items-center gap-1.5">
+          <span>📅</span> Calendario
+          <span class="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded border border-amber-500/30 font-black">Backlog</span>
+        </button>
+        <button onclick="App.navigate('forum')" data-nav-view="forum" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-transparent hover:text-white">
+          💬 Foro Científico
+        </button>
+        <button onclick="App.navigate('citizen')" data-nav-view="citizen" class="px-3 py-1.5 rounded-xl text-xs font-bold transition-all border border-transparent hover:text-white">
+          🚨 Denuncias & Donaciones
+        </button>
+        <button id="nav-admin-link" onclick="App.navigate('admin')" data-nav-view="admin" class="hidden px-3 py-1.5 rounded-xl text-xs font-bold transition-all bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30">
+          👑 Panel Admin
+        </button>
+      </nav>
+
+      <!-- Área de Sesión y Perfil -->
+      <div class="flex items-center gap-2">
+        <!-- Acciones Visitante (No Autenticado) -->
+        <div id="nav-auth-actions" class="flex items-center gap-2">
+          <button onclick="App.openAuthModal('login')" class="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition-all shadow-md shadow-cyan-500/20">
+            Iniciar Sesión
+          </button>
+          <button onclick="App.openAuthModal('register')" class="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#0b2545] border border-cyan-500/40 text-cyan-300 text-xs font-semibold hover:border-cyan-400 transition-all">
+            Registrarse
+          </button>
+        </div>
+
+        <!-- Usuario Autenticado -->
+        <div id="nav-user-profile" class="hidden flex items-center gap-2 sm:gap-3">
+          <button onclick="App.navigate('profile')" class="flex items-center gap-2 px-3 py-1.5 rounded-2xl bg-[#0b2545] border border-cyan-500/30 hover:border-cyan-400 transition-all text-left">
+            <div class="w-7 h-7 rounded-xl bg-gradient-to-tr from-cyan-400 to-purple-500 flex items-center justify-center text-xs font-black text-slate-950">
+              👤
+            </div>
+            <div class="hidden sm:block">
+              <div class="text-xs font-bold text-white leading-none" id="user-display-name">Usuario</div>
+              <div class="mt-1" id="user-display-role"></div>
+            </div>
+          </button>
+
+          <button onclick="App.logout()" class="p-2 rounded-xl bg-slate-800/80 hover:bg-red-500/20 text-slate-400 hover:text-red-300 border border-slate-700/60 hover:border-red-500/30 transition-all text-xs" title="Cerrar Sesión">
+            🚪
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ============================================================== -->
+  <!-- BARRA DE ACCESO RÁPIDO PARA EVALUACIÓN DOCENTE / TESTING -->
+  <!-- ============================================================== -->
+  <div class="bg-gradient-to-r from-[#030a16] via-[#07192f] to-[#030a16] border-b border-cyan-500/20 py-2 px-4 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <span class="text-cyan-300 font-bold flex items-center gap-1.5">
+        <span>⚡</span> Accesos Rápidos de Prueba (4 Roles):
+      </span>
+      <div class="flex flex-wrap items-center gap-1.5">
+        <button onclick="App.quickFillLogin('admin')" class="px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-black transition-all">
+          👑 Admin
+        </button>
+        <button onclick="App.quickFillLogin('experto')" class="px-2.5 py-1 rounded-lg bg-purple-500/20 hover:bg-purple-500/30 text-purple-300 border border-purple-500/40 text-[11px] font-black transition-all">
+          🔬 Experto
+        </button>
+        <button onclick="App.quickFillLogin('voluntario')" class="px-2.5 py-1 rounded-lg bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-300 border border-emerald-500/40 text-[11px] font-black transition-all">
+          🌿 Voluntario
+        </button>
+        <button onclick="App.quickFillLogin('ciudadano')" class="px-2.5 py-1 rounded-lg bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-300 border border-cyan-500/40 text-[11px] font-black transition-all">
+          🌊 Ciudadano
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- CUERPO PRINCIPAL DINÁMICO (VISTAS) -->
+  <!-- ============================================================== -->
+  <main class="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 mobile-safe-bottom">
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 1. VISTA: INICIO (HOME) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-home" class="view-section space-y-12 animate-in fade-in duration-300">
+      
+      <!-- Hero Principal ODS 14 -->
+      <div class="relative rounded-3xl overflow-hidden p-8 sm:p-14 text-center border border-cyan-500/30 shadow-2xl ocean-glass-card">
+        <div class="max-w-3xl mx-auto space-y-6 relative z-10">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-bold uppercase tracking-wider">
+            <span>🌍</span> Objetivo de Desarrollo Sostenible 14
+          </div>
+          <h1 class="text-3xl sm:text-5xl font-black text-white leading-tight">
+            Conservar y Utilizar Sosteniblemente los <span class="bg-gradient-to-r from-cyan-400 to-teal-300 bg-clip-text text-transparent">Océanos y Mares</span>
+          </h1>
+          <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+            Plataforma colaborativa donde la comunidad científica, voluntarios dedicados y ciudadanos comprometidos articulan esfuerzos para restaurar corales, proteger manglares y mitigar la contaminación marina.
+          </p>
+          <div class="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button onclick="App.navigate('calendar')" class="px-6 py-3 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase transition-all shadow-lg shadow-cyan-500/30">
+              📅 Ver Calendario de Actividades
+            </button>
+            <button onclick="App.navigate('forum')" class="px-6 py-3 rounded-2xl bg-[#0b2545] border border-cyan-500/40 text-cyan-300 font-bold text-xs uppercase hover:border-cyan-400 transition-all">
+              💬 Foro de Investigadores
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pilares de Conservación ODS 14 -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="ocean-glass-card rounded-3xl p-6 space-y-3 border border-cyan-500/20 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center text-2xl border border-purple-500/40">
+              🔬
+            </div>
+            <h3 class="text-lg font-bold text-white">Investigación Marina</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Expertos y biólogos publican artículos científicos, lideran debates y aportan conocimiento riguroso para la toma de decisiones ambientales.
+            </p>
+          </div>
+          <button onclick="App.openAuthModal('register', 'experto')" class="text-xs font-bold text-purple-400 hover:underline pt-2 text-left">
+            Registrarme como Experto &rarr;
+          </button>
+        </div>
+
+        <div class="ocean-glass-card rounded-3xl p-6 space-y-3 border border-cyan-500/20 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-2xl border border-emerald-500/40">
+              🌿
+            </div>
+            <h3 class="text-lg font-bold text-white">Voluntariado en Terreno</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Jornadas de siembra de corales, limpieza de playas y monitoreo de tortugas. Acumula horas verificables y desbloquea insignias de mérito.
+            </p>
+          </div>
+          <button onclick="App.openAuthModal('register', 'voluntario')" class="text-xs font-bold text-emerald-400 hover:underline pt-2 text-left">
+            Registrarme como Voluntario &rarr;
+          </button>
+        </div>
+
+        <div class="ocean-glass-card rounded-3xl p-6 space-y-3 border border-cyan-500/20 flex flex-col justify-between">
+          <div class="space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-300 flex items-center justify-center text-2xl border border-cyan-500/40">
+              🌊
+            </div>
+            <h3 class="text-lg font-bold text-white">Participación Ciudadana</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Reporta denuncias de contaminación costera, consulta contenidos educativos y apoya campañas de donación para el cuidado de los mares.
+            </p>
+          </div>
+          <button onclick="App.openAuthModal('register', 'ciudadano')" class="text-xs font-bold text-cyan-400 hover:underline pt-2 text-left">
+            Registrarme como Ciudadano &rarr;
+          </button>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 2. VISTA: CALENDARIO DE ACTIVIDADES (HU-P-01 BACKLOG) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-calendar" class="view-section hidden space-y-8 animate-in fade-in duration-300">
+      
+      <!-- Banner Distintivo del Backlog -->
+      <div class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div class="flex items-center gap-3">
+          <span class="text-2xl">📌</span>
+          <div>
+            <h2 class="text-sm font-black text-amber-300 uppercase tracking-wide">
+              Funcionalidad Adicional del Backlog (HU-P-01 - No incluida en Sprint 2)
+            </h2>
+            <p class="text-xs text-slate-300">
+              Módulo independiente de creación y visualización de actividades en el calendario. Solo el Administrador General puede crear convocatorias.
+            </p>
+          </div>
+        </div>
+
+        <!-- Botón Crear Actividad (Visible solo para Administrador) -->
+        <button id="btn-admin-create-activity" onclick="App.openCreateActivityModal()" class="hidden px-4 py-2 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase transition-all shadow-md shadow-amber-500/20 whitespace-nowrap self-start sm:self-auto">
+          ➕ Crear Actividad
+        </button>
+      </div>
+
+      <!-- Listado de Actividades del Calendario -->
+      <div id="calendar-activities-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- Renderizado dinámico desde app.js -->
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 3. VISTA: PERFIL DE USUARIO (RF02) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-profile" class="view-section hidden space-y-8 animate-in fade-in duration-300">
+      <div id="profile-content-container">
+        <!-- Contenido renderizado según rol en app.js -->
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 4. VISTA: PANEL DE ADMINISTRACIÓN GENERAL (RF09) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-admin" class="view-section hidden space-y-8 animate-in fade-in duration-300">
+      
+      <!-- Cabecera Panel Admin -->
+      <div class="ocean-glass-card rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">👑</span>
+            <h2 class="text-2xl font-black text-white">Panel de Administración General</h2>
+          </div>
+          <p class="text-xs text-slate-400 mt-1">Control integral de usuarios, cambio de roles, suspensión de cuentas y moderación (RF09).</p>
+        </div>
+      </div>
+
+      <!-- Filtros y Búsqueda (CP-HU-009-2-02) -->
+      <div class="ocean-glass-card rounded-3xl p-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="sm:col-span-2 relative">
+            <input type="text" id="admin-search-input" placeholder="Buscar usuarios por nombre o correo electrónico..." class="w-full bg-[#07192f] border border-cyan-500/30 rounded-2xl px-4 py-2.5 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <select id="admin-role-filter" class="w-full bg-[#07192f] border border-cyan-500/30 rounded-2xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+              <option value="">Todos los Roles</option>
+              <option value="administrador">Administrador General</option>
+              <option value="experto">Investigador Marino</option>
+              <option value="voluntario">Voluntario</option>
+              <option value="ciudadano">Ciudadano</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Tabla de Usuarios (CP-HU-009-2-01) -->
+        <div class="overflow-x-auto rounded-2xl border border-slate-800">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-[#0b2545] text-cyan-300 uppercase font-black tracking-wider text-[11px] border-b border-cyan-500/20">
+              <tr>
+                <th class="p-4">Usuario</th>
+                <th class="p-4">Rol Asignado</th>
+                <th class="p-4">Estado</th>
+                <th class="p-4 hidden sm:table-cell">Ubicación</th>
+                <th class="p-4 text-right">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="admin-users-table-body" class="divide-y divide-slate-800">
+              <!-- Renderizado dinámico -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Mensaje de lista vacía si no hay coincidencias (CP-HU-009-2-02) -->
+        <div id="admin-empty-message" class="hidden p-8 text-center text-slate-400 bg-[#07192f]/40 rounded-2xl border border-dashed border-slate-800 text-xs">
+          No se encontraron usuarios que coincidan con los criterios de búsqueda y filtro seleccionados.
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 5. VISTA: FORO CIENTÍFICO (RF09) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-forum" class="view-section hidden space-y-8 animate-in fade-in duration-300">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-black text-white flex items-center gap-2">
+            <span>💬</span> Foro Comunitario Submarino
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Hilos y artículos científicos moderados para la conservación del ODS 14.</p>
+        </div>
+        <button onclick="App.openNewThreadModal()" class="px-4 py-2.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-md shadow-cyan-500/20 self-start sm:self-auto">
+          ➕ Nuevo Debate
+        </button>
+      </div>
+
+      <div id="forum-threads-list" class="space-y-4">
+        <!-- Renderizado dinámico -->
+      </div>
+    </section>
+
+    <!-- ----------------------------------------------------------- -->
+    <!-- 6. VISTA: ACCIONES CIUDADANAS (DENUNCIAS & DONACIONES) -->
+    <!-- ----------------------------------------------------------- -->
+    <section id="view-citizen" class="view-section hidden space-y-8 animate-in fade-in duration-300">
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Formulario Denuncia Ambiental -->
+        <div class="ocean-glass-card rounded-3xl p-6 sm:p-8 space-y-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <span>🚨</span> Reportar Denuncia Ambiental Marina
+          </h3>
+          <p class="text-xs text-slate-300">Registra situaciones de pesca ilegal, vertimientos o desechos plásticos.</p>
+          <form id="form-citizen-report" class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Título de la denuncia</label>
+              <input type="text" id="rep-title" required placeholder="ej. Contaminación por plástico en playa" class="w-full bg-[#07192f] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Ubicación exacta</label>
+              <input type="text" id="rep-location" required placeholder="ej. Bahía de Cartagena, sector norte" class="w-full bg-[#07192f] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Descripción detallada</label>
+              <textarea id="rep-description" rows="3" required placeholder="Detalla lo observado..." class="w-full bg-[#07192f] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"></textarea>
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-md shadow-cyan-500/20">
+              Enviar Reporte
+            </button>
+          </form>
+
+          <div class="pt-4 border-t border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-cyan-300">Denuncias Recientes:</h4>
+            <div id="citizen-reports-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+        <!-- Formulario Donación a Campañas -->
+        <div class="ocean-glass-card rounded-3xl p-6 sm:p-8 space-y-4">
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <span>💙</span> Aportar a Campaña de Conservación
+          </h3>
+          <p class="text-xs text-slate-300">Apoya económicamente proyectos de siembra de corales y rescate faunístico.</p>
+          <form id="form-citizen-donation" class="space-y-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Seleccionar campaña</label>
+              <select id="don-campaign" required class="w-full bg-[#07192f] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+                <option value="Adopta y Siembra un Coral 2026">Adopta y Siembra un Coral 2026</option>
+                <option value="Protección de Guarderías de Tortuga Carey">Protección de Guarderías de Tortuga Carey</option>
+                <option value="Fondo de Limpieza de Fondos Marinos">Fondo de Limpieza de Fondos Marinos</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Monto en USD ($)</label>
+              <input type="number" id="don-amount" min="1" step="0.5" required placeholder="50.00" class="w-full bg-[#07192f] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+            </div>
+            <button type="submit" class="w-full py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs uppercase shadow-md shadow-emerald-500/20">
+              Confirmar Aporte
+            </button>
+          </form>
+
+          <div class="pt-4 border-t border-slate-800 space-y-3">
+            <h4 class="text-xs font-bold text-emerald-300">Aportes Realizados:</h4>
+            <div id="citizen-donations-list" class="space-y-2"></div>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================================== -->
+  <!-- BARRA INFERIOR DE NAVEGACIÓN MÓVIL (NATIVE-APP STYLE) -->
+  <!-- ============================================================== -->
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#07192f]/95 border-t border-cyan-500/30 backdrop-blur-lg px-2 py-2 flex justify-around items-center shadow-[0_-4px_25px_rgba(0,0,0,0.6)]">
+    <button onclick="App.navigate('home')" class="flex flex-col items-center justify-center py-1 px-2 text-slate-300 hover:text-cyan-400">
+      <span class="text-lg">🏠</span>
+      <span class="text-[10px] font-bold">Inicio</span>
+    </button>
+    <button onclick="App.navigate('calendar')" class="flex flex-col items-center justify-center py-1 px-2 text-slate-300 hover:text-cyan-400">
+      <span class="text-lg">📅</span>
+      <span class="text-[10px] font-bold">Calendario</span>
+    </button>
+    <button onclick="App.navigate('forum')" class="flex flex-col items-center justify-center py-1 px-2 text-slate-300 hover:text-cyan-400">
+      <span class="text-lg">💬</span>
+      <span class="text-[10px] font-bold">Foro</span>
+    </button>
+    <button onclick="App.navigate('profile')" class="flex flex-col items-center justify-center py-1 px-2 text-slate-300 hover:text-cyan-400">
+      <span class="text-lg">👤</span>
+      <span class="text-[10px] font-bold" id="mobile-profile-text">Perfil</span>
+    </button>
+    <button id="mobile-admin-link" onclick="App.navigate('admin')" class="hidden flex flex-col items-center justify-center py-1 px-2 text-amber-300">
+      <span class="text-lg">👑</span>
+      <span class="text-[10px] font-black">Admin</span>
+    </button>
+  </nav>
+
+  <!-- ============================================================== -->
+  <!-- MODAL DE AUTENTICACIÓN (LOGIN Y REGISTRO) -->
+  <!-- ============================================================== -->
+  <div id="auth-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+    <div class="relative w-full max-w-md bg-[#07192f] border border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+      
+      <button onclick="App.closeAuthModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">
+        ✕
+      </button>
+
+      <!-- Selector de Pestañas: Login / Registro -->
+      <div class="flex rounded-2xl bg-[#0b2545] p-1 border border-cyan-500/20">
+        <button id="tab-btn-login" onclick="App.switchAuthTab('login')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all bg-cyan-500 text-slate-950">
+          Iniciar Sesión
+        </button>
+        <button id="tab-btn-register" onclick="App.switchAuthTab('register')" class="flex-1 py-2 rounded-xl text-xs font-bold transition-all text-slate-300 hover:text-white">
+          Registrarse
+        </button>
+      </div>
+
+      <!-- FORMULARIO 1: INICIO DE SESIÓN -->
+      <form id="auth-login-form" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+          <input type="email" id="login-email" required placeholder="tu@correo.org" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña</label>
+          <input type="password" id="login-password" required placeholder="••••••••" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-lg shadow-cyan-500/30">
+          Ingresar a la Plataforma
+        </button>
+      </form>
+
+      <!-- FORMULARIO 2: REGISTRO SEGÚN ROL (RF01) -->
+      <form id="auth-register-form" class="hidden space-y-4">
+        
+        <!-- Selector de Rol (Excluye explícitamente al rol Administrador) -->
+        <div>
+          <label class="block text-xs font-bold text-cyan-300 mb-1.5 uppercase">Selecciona tu Rol de Participación:</label>
+          <div class="grid grid-cols-3 gap-2">
+            <label class="flex flex-col items-center justify-center p-2 rounded-xl border border-cyan-500/30 bg-[#0b2545] cursor-pointer hover:border-cyan-400 text-center">
+              <input type="radio" name="reg-role" value="experto" class="sr-only">
+              <span class="text-xl">🔬</span>
+              <span class="text-[10px] font-bold text-white mt-1">Experto</span>
+            </label>
+            <label class="flex flex-col items-center justify-center p-2 rounded-xl border border-cyan-500/30 bg-[#0b2545] cursor-pointer hover:border-cyan-400 text-center">
+              <input type="radio" name="reg-role" value="voluntario" checked class="sr-only">
+              <span class="text-xl">🌿</span>
+              <span class="text-[10px] font-bold text-white mt-1">Voluntario</span>
+            </label>
+            <label class="flex flex-col items-center justify-center p-2 rounded-xl border border-cyan-500/30 bg-[#0b2545] cursor-pointer hover:border-cyan-400 text-center">
+              <input type="radio" name="reg-role" value="ciudadano" class="sr-only">
+              <span class="text-xl">🌊</span>
+              <span class="text-[10px] font-bold text-white mt-1">Ciudadano</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Campos Comunes -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Nombre Completo</label>
+          <input type="text" id="reg-name" required placeholder="ej. Dra. Laura Medina" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Correo Electrónico</label>
+          <input type="email" id="reg-email" required placeholder="laura@instituto.org" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Contraseña (mínimo 8 caracteres)</label>
+          <input type="password" id="reg-password" minlength="8" required placeholder="Mínimo 8 caracteres con letras y números" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          <p class="text-[10px] text-slate-400 mt-1">Debe incluir al menos una letra y un número o símbolo.</p>
+        </div>
+
+        <!-- Campos Específicos: EXPERTO (HU-001-1) -->
+        <div id="reg-fields-expert" class="hidden space-y-3 pt-2 border-t border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-purple-300 mb-1">Institución u Organización</label>
+            <input type="text" id="reg-institution" placeholder="ej. Universidad Nacional / INVEMAR" class="w-full bg-[#0b2545] border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-purple-300 mb-1">Especialidad Biológica</label>
+            <input type="text" id="reg-specialty" placeholder="ej. Arrecifes de Coral / Ecología Marina" class="w-full bg-[#0b2545] border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-purple-300 mb-1">Credenciales Profesionales</label>
+            <input type="text" id="reg-credentials" placeholder="ej. PhD en Ciencias del Mar, Registro #492" class="w-full bg-[#0b2545] border border-purple-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-400">
+          </div>
+        </div>
+
+        <!-- Campos Específicos: VOLUNTARIO (HU-001-2) -->
+        <div id="reg-fields-volunteer" class="space-y-2 pt-2 border-t border-slate-800">
+          <div class="flex items-center justify-between">
+            <label class="block text-xs font-semibold text-emerald-300">Intereses de Conservación Marina:</label>
+            <span id="interests-helper-text" class="text-[10px] text-cyan-300 font-bold"></span>
+          </div>
+          <div id="volunteer-interests-chips" class="flex flex-wrap gap-1.5 max-h-40 overflow-y-auto p-1">
+            <!-- Chips renderizados dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Campos Específicos: CIUDADANO (HU-001-3) -->
+        <div id="reg-fields-citizen" class="hidden space-y-3 pt-2 border-t border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-cyan-300 mb-1">Ubicación / Ciudad Costera</label>
+            <input type="text" id="reg-location" placeholder="ej. Cartagena, Santa Marta, Buenaventura" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-lg shadow-cyan-500/30">
+          Crear Cuenta
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL DETALLE DE ACTIVIDAD (HU-P-01) -->
+  <!-- ============================================================== -->
+  <div id="activity-detail-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="relative w-full max-w-lg bg-[#07192f] border border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <button onclick="App.closeActivityDetailModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">✕</button>
+      <div id="activity-detail-content"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL CREAR ACTIVIDAD (HU-P-01 BACKLOG - SOLO ADMIN) -->
+  <!-- ============================================================== -->
+  <div id="create-activity-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="relative w-full max-w-lg bg-[#07192f] border border-amber-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+      <button onclick="App.closeCreateActivityModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">✕</button>
+      <div class="flex items-center gap-2">
+        <span class="text-2xl">📅</span>
+        <h3 class="text-xl font-black text-white">Crear Actividad en el Calendario</h3>
+      </div>
+      <p class="text-xs text-amber-300">Historia pendiente del Backlog HU-P-01 (Rol Administrador General).</p>
+
+      <form id="form-create-activity" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Título de la actividad *</label>
+          <input type="text" id="act-title" required placeholder="ej. Siembra de Manglares en Bahía Honda" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Tipo de Actividad *</label>
+          <select id="act-type" required class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+            <option value="Restauración de corales">Restauración de corales</option>
+            <option value="Limpieza de playas">Limpieza de playas</option>
+            <option value="Reforestación de manglares">Reforestación de manglares</option>
+            <option value="Monitoreo de fauna">Monitoreo de fauna</option>
+            <option value="Educación ambiental">Educación ambiental</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Fecha (AAAA-MM-DD) *</label>
+            <input type="date" id="act-date" required class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Horario *</label>
+            <input type="text" id="act-time" required placeholder="08:00 - 13:00" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Lugar de encuentro *</label>
+            <input type="text" id="act-location" required placeholder="Bahía Honda, La Guajira" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Cupos de voluntarios *</label>
+            <input type="number" id="act-spots" min="1" required placeholder="30" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Descripción detallada *</label>
+          <textarea id="act-description" rows="3" required placeholder="Describe las labores a ejecutar y los requerimientos..." class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs uppercase shadow-md shadow-amber-500/20">
+          Guardar y Agendar en Calendario
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL AGREGAR PUBLICACIÓN (EXPERTO) -->
+  <!-- ============================================================== -->
+  <div id="publication-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="relative w-full max-w-md bg-[#07192f] border border-purple-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4">
+      <button onclick="App.closeAddPublicationModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">✕</button>
+      <h3 class="text-lg font-black text-white flex items-center gap-2">
+        <span>📚</span> Agregar Publicación Científica
+      </h3>
+      <form id="form-add-publication" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Título del Artículo *</label>
+          <input type="text" id="pub-title" required placeholder="ej. Estado de los arrecifes coralinos" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Año *</label>
+            <input type="number" id="pub-year" min="1950" max="2030" required placeholder="2026" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Revista / Editorial</label>
+            <input type="text" id="pub-journal" placeholder="ej. Marine Ecology" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Enlace DOI o URL</label>
+          <input type="url" id="pub-url" placeholder="https://doi.org/..." class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-white font-black text-xs uppercase shadow-md shadow-purple-500/20">
+          Guardar Publicación
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL CAMBIAR ROL DE USUARIO (ADMINISTRADOR) -->
+  <!-- ============================================================== -->
+  <div id="change-role-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="relative w-full max-w-sm bg-[#07192f] border border-cyan-500/40 rounded-3xl p-6 shadow-2xl space-y-4">
+      <button onclick="App.closeChangeRoleModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">✕</button>
+      <h3 class="text-base font-black text-white">Cambiar Rol de Usuario</h3>
+      <p class="text-xs text-slate-300">Modificando rol de: <strong id="change-role-user-name" class="text-cyan-300"></strong></p>
+      <input type="hidden" id="change-role-user-id">
+      <div>
+        <label class="block text-xs font-semibold text-slate-400 mb-1">Nuevo Rol:</label>
+        <select id="change-role-select" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+          <option value="voluntario">Voluntario</option>
+          <option value="experto">Investigador Marino</option>
+          <option value="ciudadano">Ciudadano Colaborador</option>
+          <option value="administrador">Administrador General</option>
+        </select>
+      </div>
+      <button onclick="App.submitChangeRole()" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-md shadow-cyan-500/20">
+        Confirmar Cambio de Rol
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- MODAL NUEVO HILO FORO (EXPERTO / ADMIN) -->
+  <!-- ============================================================== -->
+  <div id="new-thread-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="relative w-full max-w-lg bg-[#07192f] border border-cyan-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4">
+      <button onclick="App.closeNewThreadModal()" class="absolute top-5 right-5 text-slate-400 hover:text-white p-1 text-xl">✕</button>
+      <h3 class="text-lg font-black text-white flex items-center gap-2">
+        <span>💬</span> Crear Nuevo Hilo de Debate
+      </h3>
+      <form id="form-new-thread" class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Título del Debate *</label>
+          <input type="text" id="thread-title" required placeholder="ej. Nuevas tecnologías para el monitoreo de microplásticos" class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Categoría *</label>
+          <select id="thread-category" required class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400">
+            <option value="Investigación Científica">Investigación Científica</option>
+            <option value="Restauración de Arrecifes">Restauración de Arrecifes</option>
+            <option value="Políticas Marinas">Políticas Marinas</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">Contenido o Planteamiento *</label>
+          <textarea id="thread-content" rows="4" required placeholder="Expón tus hallazgos o la pregunta a debatir..." class="w-full bg-[#0b2545] border border-cyan-500/30 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-400"></textarea>
+        </div>
+        <button type="submit" class="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-black text-xs uppercase shadow-md shadow-cyan-500/20">
+          Publicar en el Foro
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================== -->
+  <!-- CONTENEDOR DE NOTIFICACIONES TOAST -->
+  <!-- ============================================================== -->
+  <div id="toast-container" class="fixed bottom-20 md:bottom-6 right-4 sm:right-6 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- Scripts de la Aplicación -->
+  <script src="/js/api.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
